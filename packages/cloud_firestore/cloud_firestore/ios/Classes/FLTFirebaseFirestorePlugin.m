@@ -45,16 +45,20 @@ NSString *const kFLTFirebaseFirestoreChannelName = @"plugins.flutter.io/firebase
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
-  FLTFirebaseFirestoreReaderWriter *firestoreReaderWriter = [FLTFirebaseFirestoreReaderWriter new];
-  FlutterMethodChannel *channel =
-      [FlutterMethodChannel methodChannelWithName:kFLTFirebaseFirestoreChannelName
-                                  binaryMessenger:[registrar messenger]
-                                            codec:[FlutterStandardMethodCodec
-                                                      codecWithReaderWriter:firestoreReaderWriter]];
-
   FLTFirebaseFirestorePlugin *instance = [FLTFirebaseFirestorePlugin sharedInstance];
-  instance.channel = channel;
-  [registrar addMethodCallDelegate:instance channel:channel];
+  if (instance.channel == nil ) {
+    FLTFirebaseFirestoreReaderWriter *firestoreReaderWriter = [FLTFirebaseFirestoreReaderWriter new];
+    NSLog(@"Setup channel");
+    FlutterMethodChannel *channel = [FlutterMethodChannel methodChannelWithName:kFLTFirebaseFirestoreChannelName
+    binaryMessenger:[registrar messenger]
+    codec:[FlutterStandardMethodCodec
+    codecWithReaderWriter:firestoreReaderWriter]];
+    instance.channel = channel;
+  } else {
+    NSLog(@"Channel already ok");
+    return;
+  }
+  [registrar addMethodCallDelegate:instance channel:instance.channel];
 #if TARGET_OS_OSX
 // TODO(Salakar): Publish does not exist on MacOS version of FlutterPluginRegistrar.
 #else
