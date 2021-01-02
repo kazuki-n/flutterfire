@@ -93,11 +93,12 @@ BOOL static initialAuthState = true;
         [FlutterMethodChannel methodChannelWithName:kFLTFirebaseAuthChannelName
                                     binaryMessenger:[registrar messenger]];
     instance.channel = channel;
+    NSLog(@"Setup channel");
   } else {
     NSLog(@"Channel already ok");
     return;
   }
-  [registrar addMethodCallDelegate:instance channel:channel];
+  [registrar addMethodCallDelegate:instance channel:instance.channel];
 
 #if TARGET_OS_OSX
   // TODO(Salakar): Publish does not exist on MacOS version of FlutterPluginRegistrar.
