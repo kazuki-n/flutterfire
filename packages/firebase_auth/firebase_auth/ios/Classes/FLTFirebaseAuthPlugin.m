@@ -87,12 +87,16 @@ BOOL static initialAuthState = true;
 }
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar {
-  FlutterMethodChannel *channel =
-      [FlutterMethodChannel methodChannelWithName:kFLTFirebaseAuthChannelName
-                                  binaryMessenger:[registrar messenger]];
   FLTFirebaseAuthPlugin *instance = [FLTFirebaseAuthPlugin sharedInstance];
-  instance.channel = channel;
-
+  if (instance.channel == nil ) {
+    FlutterMethodChannel *channel =
+        [FlutterMethodChannel methodChannelWithName:kFLTFirebaseAuthChannelName
+                                    binaryMessenger:[registrar messenger]];
+    instance.channel = channel;
+  } else {
+    NSLog(@"Channel already ok");
+    return;
+  }
   [registrar addMethodCallDelegate:instance channel:channel];
 
 #if TARGET_OS_OSX
